@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Meter Readings | Smart Power{% endblock %}
+{% block content %}
+<div class="page-heading"><div><h1>Meter readings</h1><p>Actual household consumption{% if home %} · {{ home.name }}{% endif %}.</p></div><a class="button" href="{% url 'reading_create' %}">＋ Add reading</a></div>
+<div class="card">
+    <div class="section-head"><h2>Reading history</h2><span class="badge">Actual data</span></div>
+    <table>
+        <thead><tr><th>Date</th><th>kWh</th><th>Source</th><th>Notes</th><th>Actions</th></tr></thead>
+        <tbody>
+            {% for reading in readings %}
+                <tr>
+                    <td>{{ reading.reading_date }}</td>
+                    <td>{{ reading.reading_value_kwh }}</td>
+                    <td>{{ reading.source }}</td>
+                    <td>{{ reading.notes|default:'-' }}</td>
+                    <td><a href="{% url 'reading_update' reading.pk %}">Edit</a> | <a href="{% url 'reading_delete' reading.pk %}">Delete</a></td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5"><div class="empty-state">No meter readings yet. Add a reading to see your actual usage over time.</div></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

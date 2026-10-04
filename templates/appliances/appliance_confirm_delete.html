@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Delete Appliance | Smart Power{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 2rem auto;">
+    <h2>Delete appliance</h2>
+    <p>Delete <strong>{{ appliance.name }}</strong> from this home?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, delete</button>
+        <a href="{% url 'home_detail' appliance.home.pk %}">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Appliances | Smart Power{% endblock %}
+{% block content %}
+<div class="page-heading"><div><h1>Appliances</h1><p>Estimated usage from the devices in your home{% if home %} · {{ home.name }}{% endif %}.</p></div><a class="button" href="{% url 'appliance_create' %}">＋ Add appliance</a></div>
+<div class="card">
+    <div class="section-head"><h2>Tracked devices</h2><span class="badge">Estimates</span></div>
+    <table>
+        <thead><tr><th>Name</th><th>Category</th><th>Power</th><th>Hours/Day</th><th>Estimated kWh</th><th>Actions</th></tr></thead>
+        <tbody>
+            {% for appliance in appliances %}
+                <tr>
+                    <td>{{ appliance.name }}</td>
+                    <td>{{ appliance.category }}</td>
+                    <td>{{ appliance.power_watts }} W</td>
+                    <td>{{ appliance.average_hours_per_day }}</td>
+                    <td>{{ appliance.estimated_kwh_value|floatformat:2 }} kWh</td>
+                    <td><a href="{% url 'appliance_update' appliance.pk %}">Edit</a> | <a href="{% url 'appliance_delete' appliance.pk %}">Delete</a></td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6"><div class="empty-state">No appliances found. Add a device to estimate its typical energy use.</div></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

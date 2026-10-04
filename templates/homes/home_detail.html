@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}{{ home.name }} | Smart Power{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>{{ home.name }}</h2>
+    <p class="muted">{{ home.description|default:'No description provided.' }}</p>
+    <div class="actions">
+        <a href="{% url 'home_update' home.pk %}"><button>Edit</button></a>
+        <a href="{% url 'home_delete' home.pk %}"><button>Delete</button></a>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 1.5rem;">
+    <h3>Appliances</h3>
+    <table>
+        <thead><tr><th>Name</th><th>Category</th><th>Power</th><th>Estimated kWh</th></tr></thead>
+        <tbody>
+            {% for appliance in appliances %}
+                <tr>
+                    <td>{{ appliance.name }}</td>
+                    <td>{{ appliance.category }}</td>
+                    <td>{{ appliance.power_watts }} W</td>
+                    <td>{{ appliance.estimated_kwh_value|floatformat:2 }} kWh</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">No appliances added yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

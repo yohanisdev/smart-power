@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Insights | Smart Power{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Energy insights</h2>
+    <table>
+        <thead><tr><th>Type</th><th>Title</th><th>Severity</th><th>Message</th></tr></thead>
+        <tbody>
+            {% for insight in insights %}
+                <tr>
+                    <td>{{ insight.type }}</td>
+                    <td>{{ insight.title }}</td>
+                    <td>{{ insight.severity }}</td>
+                    <td>{{ insight.message }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">No insights generated yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

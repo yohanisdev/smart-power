@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Create your account | Smart Power{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block content %}
+<div class="auth-card">
+    <a href="{% url 'index' %}"><img class="auth-brand" src="{% static 'img/smart-power-logo.svg' %}" alt="Smart Power Usage Tracker"></a>
+    <header class="auth-heading"><h1>Create your account</h1><p>Start tracking household electricity, appliances, and costs.</p></header>
+    <div class="auth-divider">REGISTER WITH YOUR DETAILS</div>
+    <form class="auth-form" method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="message error">{{ form.non_field_errors }}</div>{% endif %}
+        {% for field in form %}
+            <div class="auth-field">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<div class="helptext">{{ field.help_text|safe }}</div>{% endif %}
+                {% for error in field.errors %}<div class="helptext" style="color:#b91c1c">{{ error }}</div>{% endfor %}
+            </div>
+            {% if field.name == 'password1' %}
+            <div class="password-guidance"><span>Password guidance</span><strong>Secure your account</strong><div class="strength-track"><span></span></div><div class="guidance-list"><span>Use at least 8 characters</span><span>Avoid common passwords</span></div></div>
+            {% endif %}
+        {% endfor %}
+        <button class="auth-submit" type="submit">Create account&nbsp; →</button>
+    </form>
+    <p class="auth-footer">Already have an account? <a href="{% url 'login' %}">Log in here</a></p>
+</div>
+{% endblock %}

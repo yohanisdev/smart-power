@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Analytics | Smart Power{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Analytics</h2>
+    {% if home %}
+        <div class="grid">
+            <div class="card">
+                <h3>Actual household consumption</h3>
+                <p>{{ actual_usage|floatformat:2 }} kWh</p>
+            </div>
+            <div class="card">
+                <h3>Estimated appliance consumption</h3>
+                <p>{{ estimated_usage|floatformat:2 }} kWh</p>
+            </div>
+        </div>
+        <table>
+            <thead><tr><th>Appliance</th><th>Estimated kWh</th></tr></thead>
+            <tbody>
+                {% for item in breakdown %}
+                    <tr><td>{{ item.name }}</td><td>{{ item.estimated_kwh|floatformat:2 }} kWh</td></tr>
+                {% empty %}
+                    <tr><td colspan="2">No appliance breakdown available.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No home data available yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

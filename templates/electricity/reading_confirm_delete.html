@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Delete Reading | Smart Power{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 2rem auto;">
+    <h2>Delete meter reading</h2>
+    <p>Delete reading dated <strong>{{ reading.reading_date }}</strong>?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, delete</button>
+        <a href="{% url 'reading_list' %}">Cancel</a>
+    </form>
+</div>
+{% endblock %}

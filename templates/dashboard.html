@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Overview | Smart Power{% endblock %}
+{% block breadcrumb %}Overview{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div><h1>Energy overview</h1><p>Your household power, at a glance.</p></div>
+    {% if home %}<a class="button" href="{% url 'reading_create' %}">＋ Add meter reading</a>{% endif %}
+</div>
+{% if home %}
+<div class="section-head" style="margin-bottom:12px"><div><strong>{{ home.name }}</strong><span class="muted"> · Current home</span></div><a href="{% url 'home_list' %}">Switch home →</a></div>
+<section class="grid">
+    <div class="card metric-card"><div class="metric-top"><span class="metric-label">Actual household usage</span><span class="metric-icon">↗</span></div><div class="metric-value">{{ actual_usage|floatformat:2 }} <small>kWh</small></div><div class="metric-note"><span class="badge">Metered</span> Actual consumption</div></div>
+    <div class="card metric-card"><div class="metric-top"><span class="metric-label">Estimated appliance usage</span><span class="metric-icon" style="background:#eff6ff;color:#3b82f6">▦</span></div><div class="metric-value">{{ estimated_usage|floatformat:2 }} <small>kWh</small></div><div class="metric-note"><span class="badge" style="background:#eff6ff;color:#2563eb">Estimate</span> Based on your appliances</div></div>
+    <div class="card metric-card"><div class="metric-top"><span class="metric-label">Active appliances</span><span class="metric-icon" style="background:#fff7ed;color:#ea580c">ϟ</span></div><div class="metric-value">{{ breakdown|length }}</div><div class="metric-note">Tracked in {{ home.name }}</div></div>
+    <div class="card metric-card"><div class="metric-top"><span class="metric-label">Top energy consumer</span><span class="metric-icon" style="background:#f5f3ff;color:#7c3aed">⌁</span></div>{% if breakdown %}<div class="metric-value" style="font-size:20px">{{ breakdown.0.name }}</div><div class="metric-note">{{ breakdown.0.estimated_kwh|floatformat:2 }} kWh estimated</div>{% else %}<div class="metric-value" style="font-size:18px">No appliances</div><div class="metric-note">Add appliances to see estimates</div>{% endif %}</div>
+</section>
+<section class="dashboard-grid">
+    <div class="card"><div class="section-head"><div><h2>Consumption trend</h2><span class="muted">Daily metered usage</span></div><span class="badge">Actual kWh</span></div><div class="chart-box"><canvas id="trendChart"></canvas></div></div>
+    <div class="card"><div class="section-head"><div><h2>Appliance estimates</h2><span class="muted">Estimated energy by device</span></div><a href="{% url 'appliance_list' %}">View all</a></div>{% if breakdown %}<div class="chart-box" style="height:240px"><canvas id="applianceChart"></canvas></div>{% else %}<div class="empty-state">Add appliances to see your estimated usage breakdown.</div>{% endif %}</div>
+</section>
+<section class="card" style="margin-top:16px"><div class="section-head"><div><h2>Actual vs estimated</h2><span class="muted">Meter readings and appliance estimates are shown separately.</span></div></div><div class="chart-box" style="height:230px"><canvas id="compareChart"></canvas></div></section>
+{% else %}
+<div class="card empty-state"><div class="metric-icon" style="margin:0 auto 16px;width:48px;height:48px;font-size:22px">⌂</div><h2>Start with your home</h2><p>Add a home to track meter readings, appliances, and energy trends in one place.</p><a class="button" href="{% url 'home_create' %}">＋ Add your first home</a></div>
+{% endif %}
+{% if home %}
+<script>
+const trendLabels={{ daily_labels|safe }}; const trendValues={{ daily_values|safe }};
+const applianceNames={{ breakdown_names|safe }}; const applianceValues={{ breakdown_values|safe }};
+Chart.defaults.font.family="Inter, sans-serif"; Chart.defaults.color="#94a3b8";
+new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:trendLabels,datasets:[{label:'Actual consumption (kWh)',data:trendValues,borderColor:'#059669',backgroundColor:'rgba(5,150,105,.10)',fill:true,tension:.35,pointRadius:3,pointBackgroundColor:'#059669'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},border:{display:false}},y:{beginAtZero:true,grid:{color:'#f1f5f9'},border:{display:false}}}}});
+{% if breakdown %}new Chart(document.getElementById('applianceChart'),{type:'doughnut',data:{labels:applianceNames,datasets:[{data:applianceValues,backgroundColor:['#059669','#3b82f6','#f59e0b','#8b5cf6','#06b6d4','#f97316'],borderWidth:0,hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:7,padding:14}}}}});{% endif %}
+new Chart(document.getElementById('compareChart'),{type:'bar',data:{labels:['Household consumption'],datasets:[{label:'Actual metered',data:[{{ actual_usage }}],backgroundColor:'#059669',borderRadius:6},{label:'Estimated appliances',data:[{{ estimated_usage }}],backgroundColor:'#93c5fd',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end',labels:{usePointStyle:true,boxWidth:7}}},scales:{x:{grid:{display:false},border:{display:false}},y:{beginAtZero:true,grid:{color:'#f1f5f9'},border:{display:false}}}}});
+</script>
+{% endif %}
+{% endblock %}
