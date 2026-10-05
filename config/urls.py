@@ -6,6 +6,7 @@ urlpatterns = [
     path('', RedirectView.as_view(url='/dashboard/', permanent=False), name='index'),
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
+    path('accounts/', include('allauth.urls')),
     path('homes/', include('homes.urls')),
     path('appliances/', include('appliances.urls')),
     path('readings/', include('electricity.urls')),

@@ -1,5 +1,6 @@
 Django>=6.1.1
 psycopg2-binary>=2.9.13
 djangorestframework>=3.18.1
+django-allauth[socialaccount]>=65.13.0
 python-dotenv>=1.2.4
 whitenoise>=6.12.0

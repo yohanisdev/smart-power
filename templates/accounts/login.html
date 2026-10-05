@@ -6,7 +6,8 @@
 <div class="auth-card">
     <a href="{% url 'index' %}"><img class="auth-brand" src="{% static 'img/smart-power-logo.svg' %}" alt="Smart Power Usage Tracker"></a>
     <header class="auth-heading"><h1>Welcome back</h1><p>Log in to review your household energy use.</p></header>
-    <div class="auth-divider">LOG IN WITH YOUR DETAILS</div>
+    <a class="google-auth-button" href="{% url 'google_login' %}{% if next %}?next={{ next|urlencode }}{% endif %}"><span class="google-mark" aria-hidden="true">G</span>Continue with Google</a>
+    <div class="auth-divider">OR LOG IN WITH YOUR DETAILS</div>
     <form class="auth-form" method="post">
         {% csrf_token %}
         {% if form.non_field_errors %}<div class="message error">{{ form.non_field_errors }}</div>{% endif %}

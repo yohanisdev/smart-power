@@ -4,7 +4,7 @@ Smart Power Usage Tracker is a Django-based household electricity tracking appli
 
 ## Features implemented
 
-- User registration and login
+- User registration and login, including Google OAuth sign-in and sign-up
 - Multi-home support per user
 - Appliance creation with power, runtime, and quantity assumptions
 - Appliance kWh estimation based on the formula: `(power_watts × hours_per_day × days × quantity) / 1000`
@@ -40,12 +40,13 @@ This project follows a modular Django app structure:
    pip install -r requirements.txt
    ```
 3. Create a local `.env` file based on `.env.example`.
-4. Create or confirm the PostgreSQL database `smart_power` exists for the current Linux user.
-5. Run migrations:
+4. Set up a Google OAuth client and add its client ID and secret to `.env` as `GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET`. Add `http://localhost:8000/accounts/google/login/callback/` as an authorized redirect URI in Google Cloud Console.
+5. Create or confirm the PostgreSQL database `smart_power` exists for the current Linux user.
+6. Run migrations:
    ```bash
    python manage.py migrate
    ```
-6. Start the development server:
+7. Start the development server:
    ```bash
    python manage.py runserver 127.0.0.1:8000
    ```
@@ -54,6 +55,7 @@ This project follows a modular Django app structure:
 
 - `/accounts/login/`
 - `/accounts/register/`
+- `/accounts/google/login/` (Google OAuth entry point)
 - `/dashboard/`
 - `/homes/`
 - `/appliances/`
@@ -73,4 +75,4 @@ python manage.py test
 
 ## Relationship to future AI/ML
 
-The system captures clean historical usage and tariff data in a way that can support later forecasting, anomaly detection, and AI explanations without restructuring the core model. The current MVP does not implement ML or external provider integration.
+The system captures clean historical usage and tariff data in a way that can support later forecasting, anomaly detection, and AI explanations without restructuring the core model. The current MVP does not implement ML.
