@@ -19,11 +19,56 @@
                 {% for error in field.errors %}<div class="helptext" style="color:#b91c1c">{{ error }}</div>{% endfor %}
             </div>
             {% if field.name == 'password1' %}
-            <div class="password-guidance"><span>Password guidance</span><strong>Secure your account</strong><div class="strength-track"><span></span></div><div class="guidance-list"><span>Use at least 8 characters</span><span>Avoid common passwords</span></div></div>
+            <div class="password-guidance" data-password-guidance>
+                <span>Password strength</span>
+                <strong data-strength-label aria-live="polite">Enter a password</strong>
+                <div class="strength-track" role="meter" aria-label="Password strength" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0"><span data-strength-bar></span></div>
+                <div class="guidance-list"><span data-length-check>Use at least 8 characters</span><span data-variety-check>Mix letter cases, numbers, or symbols</span></div>
+            </div>
             {% endif %}
         {% endfor %}
         <button class="auth-submit" type="submit">Create account&nbsp; →</button>
     </form>
     <p class="auth-footer">Already have an account? <a href="{% url 'login' %}">Log in here</a></p>
 </div>
+<script>
+    (() => {
+        const password = document.getElementById('{{ form.password1.id_for_label }}');
+        const guidance = document.querySelector('[data-password-guidance]');
+        if (!password || !guidance) return;
+
+        const bar = guidance.querySelector('[data-strength-bar]');
+        const meter = guidance.querySelector('[role="meter"]');
+        const label = guidance.querySelector('[data-strength-label]');
+        const lengthCheck = guidance.querySelector('[data-length-check]');
+        const varietyCheck = guidance.querySelector('[data-variety-check]');
+        const commonPasswords = new Set(['password', 'password123', '12345678', 'qwerty123', 'letmein']);
+
+        function updateStrength() {
+            const value = password.value;
+            const longEnough = value.length >= 8;
+            const variety = [/[a-z]/.test(value), /[A-Z]/.test(value), /\d/.test(value), /[^A-Za-z0-9]/.test(value)].filter(Boolean).length;
+            let score = 0;
+
+            if (value.length >= 8) score++;
+            if (value.length >= 12) score++;
+            if (variety >= 2) score++;
+            if (variety >= 3) score++;
+            if (/^(.)\1+$/.test(value) || commonPasswords.has(value.toLowerCase())) score = Math.min(score, 1);
+            if (!value) score = 0;
+
+            const levels = ['', 'weak', 'fair', 'good', 'strong'];
+            const names = ['Enter a password', 'Weak', 'Fair', 'Good', 'Strong'];
+            bar.style.width = `${score * 25}%`;
+            bar.dataset.strength = levels[score];
+            label.textContent = names[score];
+            meter.setAttribute('aria-valuenow', score);
+            lengthCheck.classList.toggle('met', longEnough);
+            varietyCheck.classList.toggle('met', variety >= 2);
+        }
+
+        password.addEventListener('input', updateStrength);
+        updateStrength();
+    })();
+</script>
 {% endblock %}

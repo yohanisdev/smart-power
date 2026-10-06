@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Continue with {{ provider.name }} | Smart Power{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block content %}
+<section class="auth-card" aria-labelledby="social-login-title">
+    <a href="{% url 'index' %}"><img class="auth-brand" src="{% static 'img/smart-power-logo.svg' %}" alt="Smart Power Usage Tracker"></a>
+    <header class="auth-heading">
+        {% if process == 'connect' %}
+            <h1 id="social-login-title">Connect {{ provider.name }}</h1>
+            <p>Link your {{ provider.name }} account to Smart Power.</p>
+        {% else %}
+            <h1 id="social-login-title">Continue with {{ provider.name }}</h1>
+            <p>You’re continuing to Smart Power using your {{ provider.name }} account.</p>
+        {% endif %}
+    </header>
+    <form class="auth-form" method="post">
+        {% csrf_token %}
+        <button class="auth-submit" type="submit">
+            {% if process == 'connect' %}Connect account{% else %}Continue{% endif %}
+            <span aria-hidden="true">&nbsp;→</span>
+        </button>
+    </form>
+    <p class="auth-footer"><a href="{% url 'login' %}">Back to log in</a></p>
+</section>
+{% endblock %}
