@@ -81,6 +81,11 @@
         .auth-form { gap:13px; }
         .auth-field label { display:block;font:700 10px Inter,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#475569;margin-bottom:6px; }
         .auth-field input { height:42px;padding:10px 13px;border-color:#e2e8f0;font-size:13px; }
+        .password-input-wrap { position:relative; }
+        .auth-field .password-input-wrap input { padding-right:44px; }
+        .password-visibility-toggle { position:absolute;top:50%;right:6px;transform:translateY(-50%);width:32px;height:32px;padding:6px;border:0;border-radius:6px;background:transparent;color:#64748b; }
+        .password-visibility-toggle:hover { background:#f1f5f9;color:#334155; }
+        .password-visibility-toggle svg { display:block;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round; }
         .auth-field .helptext,.auth-field ul { font-size:11px;color:#94a3b8;margin:5px 0 0;padding-left:16px; }
         .auth-field .errorlist { color:#b91c1c; }
         .auth-submit { width:100%;height:44px;margin-top:5px; }
@@ -141,5 +146,34 @@
         </div>
     </main>
 </div>
+<script>
+    (() => {
+        if (!document.body.classList.contains('auth-page')) return;
+
+        document.querySelectorAll('.auth-field input[type="password"]').forEach((input) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'password-input-wrap';
+            input.parentNode.insertBefore(wrapper, input);
+            wrapper.appendChild(input);
+
+            const toggle = document.createElement('button');
+            toggle.className = 'password-visibility-toggle';
+            toggle.type = 'button';
+            toggle.setAttribute('aria-label', 'Show password');
+            toggle.setAttribute('aria-pressed', 'false');
+            toggle.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="M4 4l16 16"/></svg>';
+            wrapper.appendChild(toggle);
+
+            toggle.addEventListener('click', () => {
+                const showing = input.type === 'password';
+                input.type = showing ? 'text' : 'password';
+                toggle.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
+                toggle.setAttribute('aria-pressed', String(showing));
+                toggle.querySelector('.eye-slash').style.display = showing ? 'none' : '';
+                input.focus();
+            });
+        });
+    })();
+</script>
 </body>
 </html>
