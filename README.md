@@ -75,4 +75,4 @@ python manage.py test
 
 ## Relationship to future AI/ML
 
-The system captures clean historical usage and tariff data in a way that can support later forecasting, anomaly detection, and AI explanations without restructuring the core model. The current MVP does not implement ML. and yes it will do it 
+The system captures clean historical usage and tariff data in a way that can support later forecasting, anomaly detection, and AI explanations without restructuring the core model. The current MVP does not implement ML. and yes it will do it now 
